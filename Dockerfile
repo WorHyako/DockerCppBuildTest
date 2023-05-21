@@ -23,7 +23,7 @@ RUN apt-get install -y \
 # | install
 RUN mkdir vtk-folder && cd vtk-folder && \
     git clone https://github.com/Kitware/VTK.git src && \
-    cd src && git checkout v9.2.0 && git submodule init && git submodule update \
+    cd src && git checkout v9.2.0 && git submodule init && git submodule update && \
     cd Remote && git clone https://github.com/dgobbi/vtk-dicom
 
 RUN cd vtk-folder && mkdir build && mkdir install
