@@ -28,14 +28,21 @@ RUN mkdir vtk-folder && cd vtk-folder && \
 
 RUN cd vtk-folder && mkdir build && mkdir install
 
-WORKDIR vtk-folder/build
+RUN cd vtk-folder/build && cmake ../src . \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DVTK_GROUP_ENABLE_Qt=YES -DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES \
+    -DVTK_MODULE_ENABLE_VTK_RenderingQt=YES -DVTK_MODULE_ENABLE_VTK_ViewsQt=YES -DVTK_QT_VERSION=6 \
+    -DVTK_MODULE_ENABLE_VTK_DICOM=YES \
+    -DCMAKE_INSTALL_PREFIX=/vtk-folder/install
 
-RUN cmake ../src . \
--DCMAKE_BUILD_TYPE=Release \
--DVTK_GROUP_ENABLE_Qt=YES -DVTK_MODULE_ENABLE_VTK_GUISupportQt=YES \
--DVTK_MODULE_ENABLE_VTK_RenderingQt=YES -DVTK_MODULE_ENABLE_VTK_ViewsQt=YES -DVTK_QT_VERSION=6 \
--DVTK_MODULE_ENABLE_VTK_DICOM=YES \
-#-DVTK_MODULE_ENABLE_VTK_vtkDICOM=YES \
--DCMAKE_INSTALL_PREFIX=/vtk-folder/install
+RUN cd vtk-folder/build && \
+    cmake --build . --config Debug -j 14 && \
+    cmake --install .
 
-RUN cmake --build . --config Debug -j 14
+ENV VTK_DIR /vtk-folder/install/lib/cmake/vtk-9.2
+
+RUN mkdir app
+
+ADD ./src app/
+
+WORKDIR app
